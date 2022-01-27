@@ -17,7 +17,7 @@
     - BIG-IQ is available and manages BIG-IPs with Security Services discovered.
     - This operation changes the BIG-IPs directly, BIG-IQ will need to be synced with the changes made directly on the BIG-IPs. 
     - The "rest-proxy" functionality must be enabled for each BIG-IP within BIG-IQ. https://support.f5.com/csp/article/K79939355
-    - Each BIG-IP should be able to reach downloads.f5.com.  This can be directly or via an explicit proxy (https://support.f5.com/csp/article/K10942531)
+    - Each BIG-IP should be able to reach downloads.f5.com.  This can be directly or via an explicit forward proxy. https://support.f5.com/csp/article/K10942531
     - This playbook creates a NEW signature set, it does not add to an existing signature set
     - I've set the BIG-IPs to disable autodownload of live updates
         - tmsh sys db liveupdate.autodownload value disable
