@@ -1,0 +1,11 @@
+---
+
+  - include_tasks: init.yml
+
+  - include_tasks: getInstallationsOfSigFile.yml
+
+  - include_tasks: getSigFileIDfromInstallation.yml
+
+  - include_tasks: getCurrentlyInstalledSigFile.yml
+
+

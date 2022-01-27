@@ -1,0 +1,27 @@
+
+  - name: Set_fact - Create bigipDevicesDict variable
+    set_fact:
+      bigipDevicesDict: {}
+
+  - name: Set_fact - Create dictionary with BIG-IP hostname, management IP, machineID, version, and "true" if ASM has been discovered
+    set_fact:
+      bigipDevicesDict: "{{  bigipDevicesDict | combine({item: bigipDevices | json_query(query_json)}) }}"
+    vars:
+      query_json: >
+        {"bigipName": json.items[{{item}}].hostname, "managementAddress": json.items[{{item}}].managementAddress, "machineId": json.items[{{item}}].machineId, "version": json.items[{{item}}].version, "ASMdiscovered": json.items[{{item}}].properties.modules | contains(@,'Web Application Security Group')}
+    loop: "{{ range(0, (numbigipDevices | int)) |list }}"
+
+  - name: Print result of device dictionary
+    debug:
+      msg: "{{bigipDevicesDict}}"
+      verbosity: 3
+  
+  - name: Creating a file with BIG-IP information
+    copy:
+      dest: "../artifacts/bigipDevicesDict_orig.json"
+      content: "{{bigipDevicesDict | to_nice_json}}"
+
+  - name: Creating a copy of file with BIG-IP information
+    copy:
+      dest: "../artifacts/bigipDevicesDict.json"
+      src: "../artifacts/bigipDevicesDict_orig.json"

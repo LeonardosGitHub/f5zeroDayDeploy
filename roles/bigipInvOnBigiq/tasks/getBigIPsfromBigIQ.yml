@@ -1,0 +1,25 @@
+---
+
+  - name: GET - List of BIG-IP devices from BIG-IQ
+    uri:
+      url: "https://{{bigiq}}/mgmt/cm/system/machineid-resolver?$filter=product%20eq%20'BIG-IP'"
+      method: GET
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+    delegate_to: localhost
+    register: bigipDevices
+  
+  - name: Print result of getting all BIG-IPs that have been discovered by BIG-IQ, {{bigiq}}
+    debug:
+      msg: "{{bigipDevices}}"
+      verbosity: 3
+
+  - name: Set_fact - set variable to number of BIG-IP devices discovered
+    set_fact:
+      numbigipDevices: "{{ bigipDevices | json_query('json.items[] | length(@)') }}"
+
+  - name: Print result of number of BIG-IPs discovered
+    debug:
+      msg: "{{numbigipDevices}}"
+      verbosity: 3

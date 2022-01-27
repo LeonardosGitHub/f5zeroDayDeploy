@@ -1,0 +1,21 @@
+---
+
+  - include_tasks: init.yml
+  
+  - include_tasks: getParentPolicyInfo.yml
+
+  - include_tasks: sigSetToParentPolicy.yml
+  
+  - include_tasks: getChildPolicyInfo.yml
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    loop_control:
+      loop_var: outer_item
+    when: outer_item.value.ASMdiscovered == true
+
+  - include_tasks: sigSetToChildPolicy.yml
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    loop_control:
+      loop_var: outer_item
+    when: outer_item.value.ASMdiscovered == true
+
+  - include_tasks: applyPolicyParent.yml

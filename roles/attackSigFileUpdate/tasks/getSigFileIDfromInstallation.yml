@@ -1,0 +1,51 @@
+---
+
+  - name: Set_fact - Create dictionary variable to hold the signature file ID so we can start the install of file
+    set_fact:
+        getSigFileIdDict:
+
+  - name: Set_fact - Populate getSigFileIdDict variable with the ID of the signature file
+    set_fact:
+      getSigFileIdDict: "{{  getSigFileIdDict | combine({item.key: getSigFileIDrequest | json_query(query_json)}) }}"
+    vars:
+      query_json: >
+        {"fileId": results[{{item.key}}].json.items[?status==`staged`].id | @[0]}  
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    when: item.value.ASMdiscovered == true
+
+  - name: Print result of device dictionary
+    debug:
+      msg: "{{getSigFileIdDict}}"
+      verbosity: 3
+  
+  - name: Creating a file with Signature File information
+    copy:
+      dest: "../artifacts/getSigFileIdDict.json"
+      content: "{{getSigFileIdDict | to_nice_json}}"
+
+  - name: Merge bigipDevices.json and getSigFileIdDict.json into a new file
+    shell: jq -s '.[0] * .[1]' ../artifacts/bigipDevicesDict.json ../artifacts/getSigFileIdDict.json > ../artifacts/bigipDevicesDict2.json
+
+  - name: Load new file as bigipDevices2 variable
+    include_vars: 
+      file: ../artifacts/bigipDevicesDict2.json
+      name: bigipDevicesDict2
+
+  - name: Copying bigipDevicesDict2 to bigipDevicesDict.json
+    copy:
+      dest: "../artifacts/bigipDevicesDict.json"
+      src: "../artifacts/bigipDevicesDict2.json"
+
+  - name: Print result of bigipDevicesDict2 variable
+    debug:
+      msg: "{{bigipDevicesDict2}}"
+      verbosity: 3
+
+  - name: Set_fact - Update the bigipDevicesDict variable with contents from bigipDevicesDict2 variable
+    set_fact:
+      bigipDevicesDict: "{{bigipDevicesDict2}}"
+
+  - name: Print result of device dictionary
+    debug:
+      msg: "{{bigipDevicesDict}}"
+      verbosity: 3

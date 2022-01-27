@@ -1,0 +1,5 @@
+---
+
+  - include_tasks: getBigIPsfromBigIQ.yml
+
+  - include_tasks: createDictOfBigIPs.yml

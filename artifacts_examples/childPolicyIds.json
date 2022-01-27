@@ -1,0 +1,27 @@
+{
+    "0": {
+        "childPolicy": "AnsibleChildPolicy2",
+        "id": "mA5D9WsPSt1W4ZhcltlCAG",
+        "inherAttackSigs": false
+    },
+    "1": {
+        "childPolicy": "AnsibleChildPolicy5",
+        "id": "XCNmNAXVZHOG9SYA24sYYHH",
+        "inherAttackSigs": true
+    },
+    "2": {
+        "childPolicy": "AnsibleChildPolicy3",
+        "id": "d35odHAnDBpezUhjA9neRT",
+        "inherAttackSigs": false
+    },
+    "3": {
+        "childPolicy": "AnsibleChildPolicy1",
+        "id": "ui9PbS7_t3ii06Us04siPO",
+        "inherAttackSigs": true
+    },
+    "4": {
+        "childPolicy": "AnsibleChildPolicy4",
+        "id": "My05D72TXwd_1Gcm_woUWE",
+        "inherAttackSigs": false
+    }
+}

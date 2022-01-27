@@ -1,0 +1,11 @@
+---
+  - include_tasks: init.yml
+  
+  - include_tasks: getSigSelfLink.yml
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    loop_control:
+      loop_var: outer_item
+    when: outer_item.value.ASMdiscovered == true
+
+  - include_tasks: createSigSet.yml
+

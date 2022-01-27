@@ -1,0 +1,117 @@
+---
+
+    - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+
+    - name: GET - installation information for currently installed signature file
+      uri:
+        url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{item.value.machineId}}/rest-proxy/mgmt/tm/live-update/asm-attack-signatures/installations?$filter=id%20eq%20'{{item.value.currentfileId}}'"
+        method: GET
+        validate_certs: no
+        headers:
+          X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+      delegate_to: localhost
+      loop: "{{ bigipDevicesDict|dict2items }}"
+      register: getSigFileInstalledRequest
+      when: item.value.ASMdiscovered == true
+
+    - name: Print result of GET to check if signature file is staged
+      debug:
+        msg: "{{getSigFileInstalledRequest}}"
+        verbosity: 3
+
+    - name: Set_fact - Remove the space after "updateFileReference " to "updateFileReference"
+      set_fact:
+        getSigFileInstalledRequest: "{{getSigFileInstalledRequest | replace('updateFileReference ', 'updateFileReference')}}"
+      
+    - name: Set_fact - Create variable to hold the selfLink for file reference to cross-check the expected signature file was downloaded and installed
+      set_fact:
+          selfLinkInstalledFileReference: {}
+
+    - name: Get the updateFileReference for the installed signature file so that we can check if it matches what is expected.
+      set_fact:
+        selfLinkInstalledFileReference: "{{  selfLinkInstalledFileReference | combine({item.key: getSigFileInstalledRequest | json_query(query_json)}) }}"
+      vars:
+        query_json: >
+          {"updateFileReferenceSelfLink": results[{{item.key}}].json.items[0].updateFileReference.link}  
+      loop: "{{ bigipDevicesDict|dict2items }}"
+      when: item.value.ASMdiscovered == true
+
+    - name: Print result of selfLinkUpdateFileReference variable
+      debug:
+        msg: "{{selfLinkInstalledFileReference}}"
+        verbosity: 3
+
+    - name: Creating a file with updateFileReference for current installation of sig file information nando
+      copy:
+        dest: "../artifacts/currentUpdateFileReference.json"
+        content: "{{selfLinkInstalledFileReference | to_nice_json}}"
+
+    - name: Merge bigipDevicesDict.json and getSigFileIdDict.json into a bigipDevicesDict_check2 file
+      shell: jq -s '.[0] * .[1]' ../artifacts/bigipDevicesDict.json ../artifacts/currentUpdateFileReference.json > ../artifacts/bigipDevicesDict_check2.json
+
+    - name: Load new file as bigipDevicesDict_check2 variable
+      include_vars: 
+        file: ../artifacts/bigipDevicesDict_check2.json
+        name: bigipDevicesDict_check2
+
+    - name: Print result of bigipDevicesDict_check2 variable
+      debug:
+        msg: "{{bigipDevicesDict_check2}}"
+        verbosity: 3
+
+    - name: Copying bigipDevicesDict_check2 to bigipDevicesDict.json
+      copy:
+        dest: "../artifacts/bigipDevicesDict.json"
+        src: "../artifacts/bigipDevicesDict_check2.json"
+
+    - name: Set_fact - Update the bigipDevicesDict variable with contents from bigipDevicesDict_check2 variable
+      set_fact:
+        bigipDevicesDict: "{{bigipDevicesDict_check2}}"
+
+    - name: Print result of device dictionary
+      debug:
+        msg: "{{bigipDevicesDict}}"
+        verbosity: 3
+
+    - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+
+    - name: GET - the Signature File name that is currently installed
+      uri:
+        url: "https://{{bigiq}}{{item.value.updateFileReferenceSelfLink | urlsplit('path')}}"
+        method: GET
+        validate_certs: no
+        headers:
+          X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+      delegate_to: localhost
+      loop: "{{ bigipDevicesDict|dict2items }}"
+      register: getSignatureFileInfoInstalled
+      when: item.value.ASMdiscovered == true
+
+    - name: print result of GET to find the name of the Signature file that was staged
+      debug:
+        msg: "{{getSignatureFileInfoInstalled}}"
+        verbosity: 3
+
+    - name: Set_fact - Create variable to hold the name of Signature File that was installed
+      set_fact:
+          nameOfSigFileInstalled: {}
+
+    - name: Get the name of Signature File that was installed on BIG-IP
+      set_fact:
+        nameOfSigFileInstalled: "{{  nameOfSigFileInstalled | combine({item.key: getSignatureFileInfoInstalled | json_query(query_json)}) }}"
+      vars:
+        query_json: >
+          {"nameOfSig": results[{{item.key}}].json.filename}  
+      loop: "{{ bigipDevicesDict|dict2items }}"
+      when: item.value.ASMdiscovered == true
+
+    - name: print result nameOfSigFileInstalled variable
+      debug:
+        msg: "{{nameOfSigFileInstalled}}"
+        verbosity: 3
+
+    - name: If the currently installed signature file match the expected signature file, update variable to true
+      set_fact:
+        currentSigFileInstalled: false
+      when: "'{{ item.value.nameOfSig }}' != '{{ newSigFileName }}'"
+      loop: "{{nameOfSigFileInstalled|dict2items}}"

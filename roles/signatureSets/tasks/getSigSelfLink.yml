@@ -1,0 +1,74 @@
+---
+
+  - name: Set_fact - Create variable for signature selfLinks
+    set_fact:
+      signatureSelfLinks: []
+
+  - name: Check if Signature selfLink file exists already
+    stat:
+      path: "../artifacts/sigLinks.yml"
+    register: sig_file_exists
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+    when: sig_file_exists.stat.exists == False
+
+  - name: GET - using REST proxy get signature ID selflink on BIG-IPs
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{outer_item.value.machineId}}/rest-proxy/mgmt/tm/asm/signatures?$filter=signatureId%20eq%20{{item}}&$select=selfLink"
+      method: GET
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+    delegate_to: localhost
+    loop: "{{ signatureIds }}"
+    register: sigIDsSelfLinksResult
+    when: sig_file_exists.stat.exists == False
+
+  - name: Print result of GET to get signature ID selflink
+    debug:
+      msg: "{{sigIDsSelfLinksResult}}"
+      verbosity: 3
+    when: sig_file_exists.stat.exists == False
+
+  - name: Set_fact - Create dictionary of signature selfLinks **List**
+    set_fact:
+      signatureSelfLinks: "{{  signatureSelfLinks + (sigIDsSelfLinksResult | json_query(query_json)) }}"
+    vars:
+      query_json: >
+        results[].json.items[].selfLink
+
+  - name: Print result of variable signatureSelfLinks
+    debug:
+      msg: "{{signatureSelfLinks}}"
+      verbosity: 3
+    when: sig_file_exists.stat.exists == False
+
+  - name: Creating a file sigLinks.yml
+    file:
+      path: "../artifacts/sigLinks.yml"
+      state: touch
+    when: sig_file_exists.stat.exists == False
+
+  - name: Appending to file sigLinks to create a complete yaml file - step 1
+    lineinfile:
+      dest: "../artifacts/sigLinks.yml"
+      line: "signatureReferences: ["
+      #insertafter: EOF
+    delegate_to: localhost
+
+  - name: Appending to file sigLinks to create a complete yaml file - step 2
+    lineinfile:
+      dest: "../artifacts/sigLinks.yml"
+      line: " link: https://localhost{{signatureSelfLinks[my_idx] | urlsplit('path')}},"
+      #insertafter: EOF
+    delegate_to: localhost
+    loop: "{{signatureSelfLinks}}"
+    loop_control:
+      index_var: my_idx
+
+  - name: Appending to file sigLinks to create a complete yaml file - step 3
+    lineinfile:
+      dest: "../artifacts/sigLinks.yml"
+      line: "]"
+      #insertafter: EOF
+    delegate_to: localhost

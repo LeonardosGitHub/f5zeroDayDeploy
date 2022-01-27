@@ -1,0 +1,16 @@
+---
+
+  - include_tasks: init.yml
+
+  - include_tasks: BigIPsToGetASMSigFile.yml
+
+  - include_tasks: verifySigFileIsStaged.yml
+
+  - include_tasks: getSigFileIDfromInstallation.yml
+
+  - include_tasks: verifyCorrectSigFile.yml
+
+  - include_tasks: startInstallOfSigFile.yml
+
+  - include_tasks: verifySigFileIsInstalled.yml
+

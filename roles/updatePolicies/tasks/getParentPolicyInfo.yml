@@ -1,0 +1,42 @@
+---
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+  
+  - name: GET - using REST proxy get parent Policy info on BIG-IPs
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{item.value.machineId}}/rest-proxy/mgmt/tm/asm/policies?$filter=name%20eq%20'{{parentPolicyName}}'&$select=id"
+      method: GET
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+    delegate_to: localhost
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    register: getParentPolicyIds
+    when: item.value.ASMdiscovered == true
+
+  - name: Print result of GET to discover Parent Policy info
+    debug:
+      msg: "{{getParentPolicyIds}}"
+      verbosity: 3
+
+  - name: Set_fact - Create dictionary variable to hold the Parent Policy IDs
+    set_fact:
+        parentPolicyId:
+
+  - name: Set_fact - Populate parentPolicyId variable with the ID of the Parent Policies
+    set_fact:
+      parentPolicyId: "{{ getParentPolicyIds | json_query(query_json) }}"
+    vars:
+      query_json: >
+        results[0].json.items[0].id
+
+  - name: Print result of Parent Policy dictionary
+    debug:
+      msg: "{{parentPolicyId}}"
+      verbosity: 3
+  
+  - name: Creating a file with Parent Policy ID
+    copy:
+      dest: "../artifacts/parentPolicyId.yml"
+      content: "parentPolicyId: {{parentPolicyId}}"
+

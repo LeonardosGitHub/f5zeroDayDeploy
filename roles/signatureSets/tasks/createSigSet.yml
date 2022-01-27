@@ -1,0 +1,57 @@
+---
+
+  - name: Load file sigLinks.yml to create variable with name sigSelfLinks
+    include_vars: 
+      file: ../artifacts/sigLinks.yml
+      name: sigSelfLinks
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+  
+  - name: POST - to create Signature Sets on BIG-IPs
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{item.value.machineId}}/rest-proxy/mgmt/tm/asm/signature-sets"
+      method: POST
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+      body:
+        isUserDefined: true
+        name: "{{sigSetName}}"
+        assignToPolicyByDefault: true
+        category: User-defined
+        type: manual
+        signatureReferences: "{{sigSelfLinks.signatureReferences}}"
+        defaultAlarm: true
+        defaultLearn: true
+        defaultBlock: true
+      body_format: json
+      status_code: 201
+    delegate_to: localhost
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    register: createSigSetonBIGIP
+    when: item.value.ASMdiscovered == true
+
+  - name: Print result of POST to create the Signature Sets on BIG-IP
+    debug:
+      msg: "{{createSigSetonBIGIP}}"
+      verbosity: 3
+
+  - name: Set_fact - Create  variable to hold the Signature Set ID
+    set_fact:
+        getSigSetId:
+
+  - name: Set_fact - Populate getSigSetId variable with the ID of the signature set
+    set_fact:
+      getSigSetId: "{{ createSigSetonBIGIP | json_query(query_json) }}"
+    vars:
+      query_json: >
+        results[0].json.id
+
+  - name: Print result of SigSet dictionary
+    debug:
+      msg: "{{getSigSetId}}"
+  
+  - name: Creating a file with Signature File information
+    copy:
+      dest: "../artifacts/sigSetId.yml"
+      content: "getSigSetId: {{getSigSetId}}"

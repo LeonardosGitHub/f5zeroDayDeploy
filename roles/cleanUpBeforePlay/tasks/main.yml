@@ -1,0 +1,11 @@
+---
+
+    - name: Clear out artifacts directory if it exists
+      file:
+        state: absent
+        path: ../artifacts
+
+    - name: Create artifacts directory to house data from the playbook run
+      file:
+        state: directory
+        path: ../artifacts

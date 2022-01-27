@@ -1,0 +1,23 @@
+---
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+  
+  - name: PATCH - to install Signature File on BIG-IP
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{item.value.machineId}}/rest-proxy/mgmt/tm/live-update/asm-attack-signatures/installations/{{item.value.fileId}}"
+      method: PATCH
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+      body:
+        status: install
+      body_format: json
+    delegate_to: localhost
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    register: startSigFileInstall
+    when: item.value.ASMdiscovered == true
+
+  - name: Print result of PATCH to install Signature File
+    debug:
+      msg: "{{startSigFileInstall}}"
+      verbosity: 3

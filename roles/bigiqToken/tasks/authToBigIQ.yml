@@ -1,0 +1,29 @@
+---
+
+  - name: POST - BIG-IQ access token & refresh token
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/authn/login"
+      method: POST
+      body:
+        username: "{{user}}"
+        password: "{{password}}"
+        loginProviderName: "{{loginProviderName}}"
+      body_format: json
+      validate_certs: no
+    delegate_to: localhost
+    register: getBigiqTokens
+
+  - name: Print result of get tokens
+    debug:
+      msg: "{{getBigiqTokens}}"
+      verbosity: 3
+
+  - name: Set_fact - create variable with access token and refreshToken
+    set_fact:
+      bigiqTokens: "{{ getBigiqTokens | json_query(query_json) }}"
+    vars: 
+      query_json: >
+        {"accessToken": json.token.token, "refreshToken": json.refreshToken.token}
+
+
+

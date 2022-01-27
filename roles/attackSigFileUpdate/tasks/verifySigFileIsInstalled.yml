@@ -1,0 +1,28 @@
+---
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+  
+  - name: GET - verify Signature File was installed
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{item.value.machineId}}/rest-proxy/mgmt/tm/live-update/asm-attack-signatures/installations?$filter=id%20eq%20'{{item.value.fileId}}'"
+      method: GET
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+    delegate_to: localhost
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    register: verifySigFileInstalled
+    when: item.value.ASMdiscovered == true
+    until: verifySigFileInstalled|json_query(query_json) == True
+    vars:
+       query_json: >
+         json.items[*].status | contains(@,'install-complete')
+    retries: 20
+    delay: 15
+
+  - name: Print result of GET to verify Signature File was installed
+    debug:
+      msg: "{{verifySigFileInstalled}}"
+      verbosity: 3
+
+ 

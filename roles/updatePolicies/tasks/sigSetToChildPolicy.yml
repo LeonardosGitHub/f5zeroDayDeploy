@@ -1,0 +1,27 @@
+---
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+  
+  - name: POST - using REST proxy to associated signature set to Child Policy on BIG-IPs
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{outer_item.value.machineId}}/rest-proxy/mgmt/tm/asm/policies/{{item.value.id}}/signature-sets"
+      method: POST
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+      body:
+        signatureSetReference:
+          link: https://localhost/mgmt/tm/asm/signature-sets/{{getSigSetId}}
+      body_format: json
+      status_code: 201
+    delegate_to: localhost
+    loop: "{{ childPolicyIds|dict2items }}"
+    register: postAssociateSetToChildPolicy
+    when: item.value.inherAttackSigs == false
+
+  - name: Print result of POST to associate signature set to Child Policy
+    debug:
+      msg: "{{postAssociateSetToChildPolicy}}"
+      verbosity: 3
+
+  

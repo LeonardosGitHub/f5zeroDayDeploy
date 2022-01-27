@@ -1,0 +1,53 @@
+---
+
+  - name: Check if Child Policy IDs file exists already
+    stat:
+      path: "../artifacts/childPolicyIds.json"
+    register: childPolicy_id_exists
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+    when: childPolicy_id_exists.stat.exists == False
+
+  - name: GET - using REST proxy get Child Policy info on BIG-IPs
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{outer_item.value.machineId}}/rest-proxy/mgmt/tm/asm/policies?$filter=parentPolicyName%20eq%20'/Common/{{parentPolicyName}}'&$select=name,id,signature-settings&$expand=signatureSettingReference"
+      method: GET
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+    delegate_to: localhost
+    register: getChildPolicyIds
+    when: childPolicy_id_exists.stat.exists == False
+
+  - name: Print result of GET to find Chile Policy info tied to specified Parent Policy on BIG-IP
+    debug:
+      msg: "{{getChildPolicyIds}}"
+      verbosity: 3
+    when: childPolicy_id_exists.stat.exists == False
+
+  - name: Set_fact - Create variable dictionary of Child Policy IDs
+    set_fact:
+      childPolicyIds: {}
+    when: childPolicy_id_exists.stat.exists == False
+
+  - name: Set_fact - Replace signature-settings with signature_settings due to bug
+    set_fact:
+      getChildPolicyIds: "{{getChildPolicyIds | replace('signature-settings', 'signature_settings')}}"
+    when: childPolicy_id_exists.stat.exists == False
+
+  - name: Set_fact - Create dictionary of Child Policy IDs
+    set_fact:
+      childPolicyIds: "{{  childPolicyIds | combine({my_idx: getChildPolicyIds | json_query(query_json)}) }}"
+    vars:
+      query_json: >
+        {"childPolicy": json.items[{{my_idx}}].name, "id": json.items[{{my_idx}}].id, "inherAttackSigs": json.items[{{my_idx}}].signature_settings.isInherited}
+    loop: "{{ range(0, getChildPolicyIds|json_query('json.totalItems')|int)|list }}"
+    loop_control:
+      index_var: my_idx
+    when: childPolicy_id_exists.stat.exists == False
+
+  - name: Creating a file with Child Policy IDs
+    copy:
+      dest: "../artifacts/childPolicyIds.json"
+      content: "{{childPolicyIds | to_nice_json }}"
+    when: childPolicy_id_exists.stat.exists == False

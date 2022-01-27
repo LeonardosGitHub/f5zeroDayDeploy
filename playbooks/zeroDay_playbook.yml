@@ -1,0 +1,52 @@
+---
+- name: Zero Day Procedure
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  vars:
+    bigiq: <IP or FQDN of BIG-IQ>
+    user: admin
+    loginProviderName: local
+    currentSigFileInstalled: true
+    newSigFileName: ASM-AttackSignatures_20220125_233138.im
+    parentPolicyName: AnsibleParentPolicy1
+    todayEpoch: "{{ansible_date_time.epoch}}"
+    sigSetName: SIGSET-{{todayEpoch}}-zeroDay
+    signatureIds:
+      - 299999999
+      - 200104768
+      - 200104769
+      - 200100087
+      - 300000000
+  
+  vars_prompt:
+    - name: password
+      prompt: "Enter Password"
+      private: yes
+
+  roles:
+    - role: cleanUpBeforePlay
+      tags:
+        - always
+    - role: bigiqToken
+      tags:
+        - always
+    - role: bigipInvOnBigiq
+      tags:
+        - always
+    - role: checkIfNewSigFileAlreadyInstalled
+      tags:
+        - preCheck
+    - role: attackSigFileUpdate
+      when: (currentSigFileInstalled == false | bool)
+      tags:
+        - sigUpdate
+    - role: signatureSets
+      tags:
+        - sigSets
+    - role: updatePolicies
+      tags:
+        - policies
+
+ 

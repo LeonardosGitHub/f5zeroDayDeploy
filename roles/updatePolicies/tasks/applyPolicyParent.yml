@@ -1,0 +1,27 @@
+---
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+  
+  - name: POST - using REST proxy to apply the Parent Policy on BIG-IPs
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{item.value.machineId}}/rest-proxy/mgmt/tm/asm/tasks/apply-policy"
+      method: POST
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+      body:
+        policyReference:
+          link: https://localhost/mgmt/tm/asm/policies/{{parentPolicyId}}
+      body_format: json
+      status_code: 201
+    delegate_to: localhost
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    register: postApplyPolicyToParent
+    when: item.value.ASMdiscovered == true
+
+  - name: Print result of POST to "apply-policy" for the Parent Policy
+    debug:
+      msg: "{{postApplyPolicyToParent}}"
+      verbosity: 3
+
+  

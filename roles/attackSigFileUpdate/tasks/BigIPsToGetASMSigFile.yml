@@ -1,0 +1,40 @@
+---
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+
+  - name: PATCH - using REST Proxy ask each BIG-IP to retrieve latest signature file
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{item.value.machineId}}/rest-proxy/mgmt/tm/live-update/asm-attack-signatures/availability"
+      method: PATCH
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+      body:
+        status: check
+      body_format: json
+    delegate_to: localhost
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    when: item.value.ASMdiscovered == true
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+
+  - name: GET - using REST Proxy check status of SigFile retrieval on each BIG-IP
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{item.value.machineId}}/rest-proxy/mgmt/tm/live-update/asm-attack-signatures/availability"
+      method: GET
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+    delegate_to: localhost
+    loop: "{{ bigipDevicesDict|dict2items }}"
+    register: bigipDevicesSigUpdateReq
+    when: item.value.ASMdiscovered == true
+    until: (bigipDevicesSigUpdateReq.json.status.find("no-update-available") != -1) or (bigipDevicesSigUpdateReq.json.status.find("update-file-retrieved") != -1)
+    retries: 10
+    delay: 15
+
+  - name: Print result of checking for Signature File download
+    debug:
+      msg: "{{bigipDevicesSigUpdateReq}}"
+      verbosity: 3
+
