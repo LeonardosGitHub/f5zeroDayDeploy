@@ -5,11 +5,14 @@
 
 - High-level description what the playbook accomplishes:
     - Obtain's inventory from BIG-IQ
+    - Checks if BIG-IP already has the requested Signature file installed, if yes, it will skip the next two steps
     - Has each BIG-IP request a Signature file update
     - Installs the new signature file
     - Creates a new Signature Set which includes the signatures specified in playbook
     - Adds new Signature Set to a Parent policy
     - Adds new Signature Set to all the Child policies that declined inheritance of attack signatures from Parent policy
+    - Enforces specified signatures in all policies
+    - Apply's parent policy which also applies the child policies
 
 <br>
 
