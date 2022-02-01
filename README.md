@@ -28,9 +28,9 @@
         - K62654042: Use the iControl REST API to create and apply attack signatures and signature sets https://support.f5.com/csp/article/K62654042
         - K79939355: Enabling BIG-IQ Centralized Management as a REST proxy for BIG-IP devices https://support.f5.com/csp/article/K79939355
         - K10942531: How to configure BIG-IP to run system updates via proxy https://support.f5.com/csp/article/K10942531
-        - K60640453: Enforcing attack signatures with iControl https://support.f5.com/csp/article/K60640453?utm_source=f5support&utm_medium=RSS
+        - K60640453: Enforcing attack signatures with iControl https://support.f5.com/csp/article/K60640453
         - F5 BIG-IQ API https://clouddocs.f5.com/products/big-iq/mgmt-api/v0.0/
-        
+
 
 <br>
 
