@@ -1,37 +1,37 @@
 {
     "0": {
         "ASMdiscovered": true,
-        "bigipName": "bigip1.example.com",
-        "machineId": "28b8a51f-f09a-4d99-a2ca-acc82df35529",
-        "managementAddress": "192.168.1.121",
+        "bigipName": "ip-192-168-1-189.us-east-2.compute.internal",
+        "machineId": "28b8a51f-f09a-4d99-a2ca-acc82df35640",
+        "managementAddress": "192.168.1.189",
         "version": "16.1.0"
     },
     "1": {
         "ASMdiscovered": true,
-        "bigipName": "bigip2.example.com",
-        "machineId": "6df57991-d5bd-4d39-886a-e52a059cfyz7",
-        "managementAddress": "192.168.1.122",
+        "bigipName": "ip-192-168-1-89.us-east-2.compute.internal",
+        "machineId": "6df57991-d5bd-4d39-886a-e52a059cfab6",
+        "managementAddress": "192.168.1.89",
         "version": "15.1.4"
     },
     "2": {
         "ASMdiscovered": true,
-        "bigipName": "bigip3.example.com",
-        "machineId": "7e572443-0863-4bdf-88f3-fa446de8brsr",
-        "managementAddress": "192.168.1.123",
+        "bigipName": "ip-192-168-1-62.us-east-2.compute.internal",
+        "machineId": "7e572443-0863-4bdf-88f3-fa446de8beae",
+        "managementAddress": "192.168.1.62",
         "version": "16.1.0"
     },
     "3": {
         "ASMdiscovered": false,
-        "bigipName": "bigip4.example.com",
+        "bigipName": "ip-192-168-1-195.us-east-2.compute.internal",
         "machineId": "a842e04c-3224-43b8-868b-b144fc15e954",
-        "managementAddress": "192.168.1.124",
-        "version": "15.1.2"
+        "managementAddress": "192.168.1.195",
+        "version": "16.1.0"
     },
     "4": {
         "ASMdiscovered": true,
-        "bigipName": "bigip5.example.com",
-        "machineId": "ba445c46-153f-4d81-899c-39ae2aff9og6",
-        "managementAddress": "192.168.1.125",
-        "version": "15.1.4"
+        "bigipName": "ip-192-168-1-17.us-east-2.compute.internal",
+        "machineId": "ba445c46-153f-4d81-899c-39ae2aff9ea6",
+        "managementAddress": "192.168.1.17",
+        "version": "16.1.0"
     }
 }

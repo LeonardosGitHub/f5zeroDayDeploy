@@ -1,0 +1,14 @@
+{
+    "0": {
+        "updateFileReferenceSelfLink": "https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35640/rest-proxy/mgmt/tm/live-update/asm-attack-signatures/update-files/ff8080817eb6f8cb017eb7353176001d"
+    },
+    "1": {
+        "updateFileReferenceSelfLink": "https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/6df57991-d5bd-4d39-886a-e52a059cfab6/rest-proxy/mgmt/tm/live-update/asm-attack-signatures/update-files/ff8080817eb6f6cc017eb733b2020022"
+    },
+    "2": {
+        "updateFileReferenceSelfLink": "https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/7e572443-0863-4bdf-88f3-fa446de8beae/rest-proxy/mgmt/tm/live-update/asm-attack-signatures/update-files/ff8080817eb6f779017eb734219f001d"
+    },
+    "4": {
+        "updateFileReferenceSelfLink": "https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/ba445c46-153f-4d81-899c-39ae2aff9ea6/rest-proxy/mgmt/tm/live-update/asm-attack-signatures/update-files/ff8080817eb6f70c017eb733e5c3001d"
+    }
+}

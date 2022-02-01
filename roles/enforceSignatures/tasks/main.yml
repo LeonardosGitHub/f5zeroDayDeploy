@@ -1,18 +1,14 @@
 ---
 
   - include_tasks: init.yml
-  
-  - include_tasks: getParentPolicyInfo.yml
 
-  - include_tasks: sigSetToParentPolicy.yml
-  
-  - include_tasks: getChildPolicyInfo.yml
+  - include_tasks: getSignatureUUIDs_task.yml
     loop: "{{ bigipDevicesDict|dict2items }}"
     loop_control:
       loop_var: outer_item
     when: outer_item.value.ASMdiscovered == true
 
-  - include_tasks: sigSetToChildPolicy.yml
+  - include_tasks: enforceSignatureinChildPolicies_task.yml
     loop: "{{ bigipDevicesDict|dict2items }}"
     loop_control:
       loop_var: outer_item

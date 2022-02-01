@@ -1,0 +1,41 @@
+{
+  "0": {
+    "ASMdiscovered": true,
+    "bigipName": "ip-192-168-1-189.us-east-2.compute.internal",
+    "machineId": "28b8a51f-f09a-4d99-a2ca-acc82df35640",
+    "managementAddress": "192.168.1.189",
+    "version": "16.1.0",
+    "currentfileId": "ff8080817eb6f8cb017eb7353176001c"
+  },
+  "1": {
+    "ASMdiscovered": true,
+    "bigipName": "ip-192-168-1-89.us-east-2.compute.internal",
+    "machineId": "6df57991-d5bd-4d39-886a-e52a059cfab6",
+    "managementAddress": "192.168.1.89",
+    "version": "15.1.4",
+    "currentfileId": "ff8080817eb6f6cc017eb733b2010021"
+  },
+  "2": {
+    "ASMdiscovered": true,
+    "bigipName": "ip-192-168-1-62.us-east-2.compute.internal",
+    "machineId": "7e572443-0863-4bdf-88f3-fa446de8beae",
+    "managementAddress": "192.168.1.62",
+    "version": "16.1.0",
+    "currentfileId": "ff8080817eb6f779017eb734219f001c"
+  },
+  "3": {
+    "ASMdiscovered": false,
+    "bigipName": "ip-192-168-1-195.us-east-2.compute.internal",
+    "machineId": "a842e04c-3224-43b8-868b-b144fc15e954",
+    "managementAddress": "192.168.1.195",
+    "version": "16.1.0"
+  },
+  "4": {
+    "ASMdiscovered": true,
+    "bigipName": "ip-192-168-1-17.us-east-2.compute.internal",
+    "machineId": "ba445c46-153f-4d81-899c-39ae2aff9ea6",
+    "managementAddress": "192.168.1.17",
+    "version": "16.1.0",
+    "currentfileId": "ff8080817eb6f70c017eb733e5c2001c"
+  }
+}

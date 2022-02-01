@@ -1,7 +1,7 @@
 signatureReferences: [
- link: https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35529/rest-proxy/mgmt/tm/asm/signatures/iSs1nGK_jlGi14pryZi0qA,
- link: https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35529/rest-proxy/mgmt/tm/asm/signatures/r1KtsZ7eOufX3tm3P1rhUA,
- link: https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35529/rest-proxy/mgmt/tm/asm/signatures/tOd2EOQdCzetaf2U3fHdKg,
- link: https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35529/rest-proxy/mgmt/tm/asm/signatures/b5NyLgUBEmU7KE6dBJsK2A,
- link: https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35529/rest-proxy/mgmt/tm/asm/signatures/7v0DvAXoPtz3f6fvoOTuSw,
+ link: https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35640/rest-proxy/mgmt/tm/asm/signatures/iSs1nGK_jlGi14pryZi0qA,
+ link: https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35640/rest-proxy/mgmt/tm/asm/signatures/r1KtsZ7eOufX3tm3P1rhUA,
+ link: https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35640/rest-proxy/mgmt/tm/asm/signatures/tOd2EOQdCzetaf2U3fHdKg,
+ link: https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35640/rest-proxy/mgmt/tm/asm/signatures/b5NyLgUBEmU7KE6dBJsK2A,
+ link: https://localhost/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/28b8a51f-f09a-4d99-a2ca-acc82df35640/rest-proxy/mgmt/tm/asm/signatures/7v0DvAXoPtz3f6fvoOTuSw,
 ]

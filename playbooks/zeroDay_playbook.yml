@@ -9,7 +9,7 @@
     user: admin
     loginProviderName: local
     currentSigFileInstalled: true
-    newSigFileName: ASM-AttackSignatures_20220125_233138.im
+    newSigFileName: ASM-AttackSignatures_20220201_134210.im
     parentPolicyName: AnsibleParentPolicy1
     todayEpoch: "{{ansible_date_time.epoch}}"
     sigSetName: SIGSET-{{todayEpoch}}-zeroDay
@@ -29,24 +29,39 @@
     - role: cleanUpBeforePlay
       tags:
         - always
+    
     - role: bigiqToken
       tags:
         - always
+    
     - role: bigipInvOnBigiq
       tags:
         - always
+
     - role: checkIfNewSigFileAlreadyInstalled
       tags:
         - preCheck
+    
     - role: attackSigFileUpdate
       when: (currentSigFileInstalled == false | bool)
       tags:
         - sigUpdate
+    
     - role: signatureSets
       tags:
         - sigSets
+    
     - role: updatePolicies
       tags:
-        - policies
+        - updatePolicies
+
+    - role: enforceSignatures
+      tags:
+        - enforceSigs
+
+    - role: applyPolicies
+      tags:
+        - applyPolicies
+    
 
  

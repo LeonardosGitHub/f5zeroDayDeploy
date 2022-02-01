@@ -1,0 +1,6 @@
+---
+  - include_tasks: getSignatureUUIDs.yml
+    loop: "{{ childPolicyIds|dict2items }}"
+    loop_control:
+      loop_var: middle_item
+    

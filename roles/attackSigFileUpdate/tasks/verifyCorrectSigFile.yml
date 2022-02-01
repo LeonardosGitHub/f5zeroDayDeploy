@@ -64,7 +64,6 @@
       debug:
         msg: "{{bigipDevicesDict3}}"
         verbosity: 3
-###
 
     - name: Copying bigipDevicesDict3 to bigipDevicesDict.json
       copy:

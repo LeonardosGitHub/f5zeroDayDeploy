@@ -49,6 +49,7 @@
     - It's possible to run parts of the playbook based on tags, for example if you want to only want to check if the currently installed signature file matches what you want/expect you can run the following:
         - ansible-playbook playbooks/zeroDay_playbook.yml --tags preCheck
         - the tags are associated with each role, look at the playbook for each tag name
+        - It's possible that one role relys on data/variables from other roles, so you may have to run more than one role for it to be successful
 
 <br>
 
@@ -75,13 +76,20 @@
         - It then asks the BIG-IPs to start installation of signature file
         - It then verifies the signature file has been installed
     - signatureSets
-        - This will first get the "selfLink" of each signature that was provided originally in the playbook
+        - This will get the "selfLink" of each signature that was provided originally in the playbook
+        - It then gets the UUID of each signature
         - It then creates a Signature Set and includes the signatures specified
     - updatePolicies
         - This goes out to get the Parent policy ID information
         - Applies the recently created Signature Set to the Parent Policy
         - Finds all Child policies tied to the Parent policy and whether that Child has declined inheritance of attack signatures. 
         - Applies the recently created Signature Set to the Child Policies that have declined inheritance of attack signatures.
-        - "Apply Policy" (pushes changes to production) for the parent policy which also applies the policy to the Child Policies. 
+    - enforceSignatures
+        - This role will enforce all signatures specified in playbook on each child policy, regarless of inheritance setting. 
+    - applyPolicies
+        - "Apply Policy" (pushes changes to production) for the parent policy which also applies the policy to all the Child Policies.
+    - bigiqRefreshToken
+        - This role is NOT referenced in the main playbook BUT this is referenced by other roles to perform a refresh of the BIG-IQ token before any REST calls are performed. 
 
 <br>
+

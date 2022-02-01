@@ -1,0 +1,12 @@
+---
+
+    - name: Load variables needed for role
+      include_vars: 
+        file: ../artifacts/bigipDevicesDict.json
+        name: bigipDevicesDict
+
+    - name: Load variables needed for role
+      include_vars: 
+        file: ../artifacts/childPolicyIds.json
+        name: childPolicyIds
+

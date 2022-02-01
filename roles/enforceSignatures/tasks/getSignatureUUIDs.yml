@@ -1,0 +1,52 @@
+---
+
+  - name: Check if Signature UUID file exists already
+    stat:
+      path: "../artifacts/signatureIdsUUID.yml"
+    register: sig_id_file_exists
+
+  - name: Set_fact - Create variable for signature UUID
+    set_fact:
+      signatureIdsUUID: []
+    when: sig_id_file_exists.stat.exists == False
+
+  - include_tasks: ../../bigiqRefreshToken/tasks/refreshToken.yml
+    when: sig_id_file_exists.stat.exists == False
+
+  - name: GET - using REST proxy get signature UUID on BIG-IPs
+    uri:
+      url: "https://{{bigiq}}/mgmt/shared/resolver/device-groups/cm-bigip-allBigIpDevices/devices/{{outer_item.value.machineId}}/rest-proxy/mgmt/tm/asm/policies/{{middle_item.value.id}}/signatures?$expand=signatureReference&$filter=signature/signatureId+eq+'{{item}}'&$select=signature/id,id"
+      method: GET
+      validate_certs: no
+      headers:
+        X-F5-Auth-Token: "{{bigiqTokens.accessToken}}"
+    delegate_to: localhost
+    loop: "{{ signatureIds }}"
+    register: sigUUIDResult
+    when: sig_id_file_exists.stat.exists == False
+
+  - name: Print result of GET to get signature UUID
+    debug:
+      msg: "{{sigUUIDResult}}"
+      verbosity: 3
+    when: sig_id_file_exists.stat.exists == False
+
+  - name: Set_fact - Create dictionary of signature IDs
+    set_fact:
+      signatureIdsUUID: "{{  signatureIdsUUID + (sigUUIDResult | json_query(query_json)) }}"
+    vars:
+      query_json: >
+        results[].json.items[].id
+    when: sig_id_file_exists.stat.exists == False
+
+  - name: Print result of variable signatureSelfLinks
+    debug:
+      msg: "{{signatureIdsUUID}}"
+      verbosity: 3
+    when: sig_id_file_exists.stat.exists == False
+
+  - name: Creating a file with Signature File information
+    copy:
+      dest: "../artifacts/signatureIdsUUID.yml"
+      content: "signatureIdsUUID: {{signatureIdsUUID}}"
+    when: sig_id_file_exists.stat.exists == False
