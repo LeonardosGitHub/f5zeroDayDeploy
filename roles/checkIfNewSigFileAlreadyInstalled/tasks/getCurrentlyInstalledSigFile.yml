@@ -110,7 +110,7 @@
         msg: "{{nameOfSigFileInstalled}}"
         verbosity: 3
 
-    - name: If the currently installed signature file match the expected signature file, update variable to true
+    - name: If the currently installed signature file does not match the expected signature file, update variable to false
       set_fact:
         currentSigFileInstalled: false
       when: "'{{ item.value.nameOfSig }}' != '{{ newSigFileName }}'"

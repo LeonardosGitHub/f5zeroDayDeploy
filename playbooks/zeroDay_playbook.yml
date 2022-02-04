@@ -10,7 +10,7 @@
     loginProviderName: local
     currentSigFileInstalled: true
     newSigFileName: ASM-AttackSignatures_20220201_134210.im
-    parentPolicyName: AnsibleParentPolicy1
+    parentPolicyName: AnsibleParentPolicy2
     todayEpoch: "{{ansible_date_time.epoch}}"
     sigSetName: SIGSET-{{todayEpoch}}-zeroDay
     signatureIds:
@@ -18,11 +18,11 @@
       - 200104768
       - 200104769
       - 200100087
-      - 300000000
+      - 300000000   #Custom Signature example
   
   vars_prompt:
     - name: password
-      prompt: "Enter Password"
+      prompt: "Enter Token"
       private: yes
 
   roles:

@@ -11,7 +11,7 @@
     - Creates a new Signature Set which includes the signatures specified in playbook
     - Adds new Signature Set to a Parent policy
     - Adds new Signature Set to all the Child policies that declined inheritance of attack signatures from Parent policy
-    - Enforces specified signatures in all policies
+    - Enforces (staging to blocking) specified signatures in specified parent and child policies
     - Apply's parent policy which also applies the child policies
 
 <br>
@@ -27,12 +27,18 @@
     - I found that the UUID of the same Parent policy, Child policy, and specific Signature Set are the same across BIG-IPS.
     - See folder "artifacts_examples" for examples of files playbook creates
     - Articles used to help create the playbook/tasks:
-        - K82512024: Managing BIG-IP ASM Live Updates (14.1.x and later) https://support.f5.com/csp/article/K82512024
-        - K62654042: Use the iControl REST API to create and apply attack signatures and signature sets https://support.f5.com/csp/article/K62654042
-        - K79939355: Enabling BIG-IQ Centralized Management as a REST proxy for BIG-IP devices https://support.f5.com/csp/article/K79939355
-        - K10942531: How to configure BIG-IP to run system updates via proxy https://support.f5.com/csp/article/K10942531
-        - K60640453: Enforcing attack signatures with iControl https://support.f5.com/csp/article/K60640453
-        - F5 BIG-IQ API https://clouddocs.f5.com/products/big-iq/mgmt-api/v0.0/
+        - K82512024: Managing BIG-IP ASM Live Updates (14.1.x and later)
+            - https://support.f5.com/csp/article/K82512024
+        - K62654042: Use the iControl REST API to create and apply attack signatures and signature sets
+            - https://support.f5.com/csp/article/K62654042
+        - K79939355: Enabling BIG-IQ Centralized Management as a REST proxy for BIG-IP devices
+            - https://support.f5.com/csp/article/K79939355
+        - K10942531: How to configure BIG-IP to run system updates via proxy
+            - https://support.f5.com/csp/article/K10942531
+        - K59393433: Enforce Attack Signature using iControl REST API
+            - https://support.f5.com/csp/article/K59393433
+        - F5 BIG-IQ MachineId Resolver API
+            - https://clouddocs.f5.com/products/big-iq/mgmt-api/v0.0/ApiReferences/bigiq_public_api_ref/r_machineid_resolver.html
 
 
 <br>
